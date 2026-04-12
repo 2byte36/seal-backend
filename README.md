@@ -66,27 +66,7 @@ HTTP Response (JSON)
 
 ## Database Schema
 
-### ERD (Entity Relationship)
-
-```
-users (1) ──────── (N) leave_requests
-  │                       │
-  │                       │ reviewed_by
-  │                       ├──────────── users
-  │                       │
-  │                       └── (1) ──── (N) leave_balance_ledgers
-  │
-  └── (1) ──────── (N) leave_balances
-```
-
-### Tabel Utama
-
-| Tabel | Deskripsi |
-|-------|-----------|
-| `users` | Data pengguna dengan role (admin/employee), support soft delete |
-| `leave_requests` | Pengajuan cuti dengan status workflow (pending → approved/rejected) |
-| `leave_balances` | Saldo cuti per user per tahun (quota, used, pending) |
-| `leave_balance_ledgers` | Log transaksi perubahan saldo (seperti buku besar) |
+![alt text](./storage/leave_management.png)
 
 ---
 
@@ -103,8 +83,8 @@ users (1) ──────── (N) leave_requests
 
 ```bash
 # 1. Clone repository
-git clone <repository-url>
-cd seal_test
+git clone https://github.com/2byte36/seal-backend.git
+cd seal_backend
 
 # 2. Install dependencies
 composer install
@@ -214,29 +194,7 @@ Authorization: Bearer <your-token>
 
 ## Workflow Status Cuti
 
-```
-Employee submit cuti
-        │
-        ▼
-   ┌─────────┐
-   │ PENDING  │  ← default saat submit
-   └────┬─────┘
-        │
-   Admin review
-        │
-   ┌────┴────┐
-   ▼         ▼
-┌────────┐ ┌──────────┐
-│APPROVED│ │ REJECTED │
-└────────┘ └──────────┘
-     │           │
-     ▼           ▼
-  Balance:    Balance:
-  used += N   pending -= N
-  pending -= N (restored)
-```
-
----
+![alt text](/storage/image.png)
 
 ## Postman Documentation
 
@@ -244,7 +202,7 @@ Link Postman: *(akan ditambahkan)*
 
 ---
 
-## Catatan Teknis
+## Notes
 
 - **API Versioning**: Semua endpoint menggunakan prefix `/api/v1/` untuk mendukung versioning di masa depan
 - **Soft Deletes**: User dan LeaveRequest mendukung soft delete untuk menjaga integritas data
