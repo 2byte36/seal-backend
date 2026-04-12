@@ -21,13 +21,7 @@ class AuthController extends Controller
     {
         $result = $this->authService->register($request->validated());
 
-        return response()->json([
-            'message' => 'Registration successful.',
-            'data' => [
-                'user' => new UserResource($result['user']),
-                'token' => $result['token'],
-            ],
-        ], 201);
+        return $this->respondWithToken($result['token'], $result['user'], 'Registration successful.', 201);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -37,13 +31,7 @@ class AuthController extends Controller
             $request->validated('password')
         );
 
-        return response()->json([
-            'message' => 'Login successful.',
-            'data' => [
-                'user' => new UserResource($result['user']),
-                'token' => $result['token'],
-            ],
-        ]);
+        return $this->respondWithToken($result['token'], $result['user'], 'Login successful.');
     }
 
     public function googleRedirect(): JsonResponse
@@ -67,13 +55,7 @@ class AuthController extends Controller
 
         $result = $this->authService->handleGoogleCallback($googleUser);
 
-        return response()->json([
-            'message' => 'Google login successful.',
-            'data' => [
-                'user' => new UserResource($result['user']),
-                'token' => $result['token'],
-            ],
-        ]);
+        return $this->respondWithToken($result['token'], $result['user'], 'Google login successful.');
     }
 
     public function me(Request $request): JsonResponse
@@ -83,12 +65,33 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-        $this->authService->logout($request->user());
+        $this->authService->logout();
 
         return response()->json([
             'message' => 'Logged out successfully.',
         ]);
+    }
+
+    public function refresh(): JsonResponse
+    {
+        $token = $this->authService->refresh();
+        $user = auth('api')->user();
+
+        return $this->respondWithToken($token, $user, 'Token refreshed successfully.');
+    }
+
+    private function respondWithToken(string $token, $user, string $message, int $status = 200): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'data' => [
+                'user' => new UserResource($user),
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
+            ],
+        ], $status);
     }
 }

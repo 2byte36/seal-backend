@@ -10,7 +10,7 @@ RESTful API untuk sistem manajemen cuti karyawan, dibangun dengan **Laravel 13**
 |-------|-----------|
 | Framework | Laravel |
 | Database | MySQL |
-| Authentication | Laravel Sanctum |
+| Authentication | JWT (php-open-source-saver/jwt-auth) |
 | OAuth | Laravel Socialite |
 | Language | PHP |
 
@@ -174,7 +174,8 @@ LEAVE_QUOTA_PER_YEAR=12
 | GET | `/api/v1/auth/google` | Get Google OAuth URL | No |
 | GET | `/api/v1/auth/google/callback` | Google OAuth callback | No |
 | GET | `/api/v1/auth/me` | Get current user info | Yes |
-| POST | `/api/v1/auth/logout` | Logout (revoke token) | Yes |
+| POST | `/api/v1/auth/logout` | Logout (invalidate JWT) | Yes |
+| POST | `/api/v1/auth/refresh` | Refresh JWT token | Yes |
 
 ### Leave Requests
 

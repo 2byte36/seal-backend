@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
@@ -19,22 +19,25 @@ class AuthService
 
         $this->ensureLeaveBalance($user);
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $token = Auth::guard('api')->login($user);
 
         return ['user' => $user, 'token' => $token];
     }
 
     public function login(string $email, string $password): array
     {
-        $user = User::where('email', $email)->first();
+        $token = Auth::guard('api')->attempt([
+            'email' => $email,
+            'password' => $password,
+        ]);
 
-        if (! $user || ! Hash::check($password, $user->password)) {
+        if (! $token) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $user = Auth::guard('api')->user();
 
         return ['user' => $user, 'token' => $token];
     }
@@ -62,14 +65,19 @@ class AuthService
 
         $this->ensureLeaveBalance($user);
 
-        $token = $user->createToken('google-auth-token')->plainTextToken;
+        $token = Auth::guard('api')->login($user);
 
         return ['user' => $user, 'token' => $token];
     }
 
-    public function logout(User $user): void
+    public function logout(): void
     {
-        $user->currentAccessToken()->delete();
+        Auth::guard('api')->logout();
+    }
+
+    public function refresh(): string
+    {
+        return Auth::guard('api')->refresh();
     }
 
     private function ensureLeaveBalance(User $user): void

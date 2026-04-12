@@ -22,11 +22,12 @@ Route::prefix('v1')->group(function () {
     });
 
     // ── Authenticated Routes ────────────────────────────────────────
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:api')->group(function () {
 
         // Auth
         Route::get('/auth/me', [AuthController::class, 'me']);
         Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::post('/auth/refresh', [AuthController::class, 'refresh']);
 
         // Leave Requests (accessible by both roles)
         Route::get('/leaves', [LeaveController::class, 'index']);
