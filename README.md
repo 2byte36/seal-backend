@@ -39,12 +39,6 @@ HTTP Request
 [Model] ─── Eloquent ORM (query database)
     │
     ▼
-[Event] ─── Trigger event (LeaveRequestCreated / LeaveRequestReviewed)
-    │
-    ▼
-[Listener] ─── LogLeaveAuditTrail (catat ke tabel audit_trails)
-    │
-    ▼
 [API Resource] ─── Format response JSON
     │
     ▼
@@ -65,12 +59,7 @@ HTTP Response (JSON)
 3. **Overlap Detection**
    - Sistem mencegah pengajuan cuti yang tanggalnya bertabrakan dengan cuti pending/approved yang sudah ada
 
-4. **Audit Trail**
-   - Setiap aksi pada leave request tercatat otomatis via Event-Listener pattern
-   - Menyimpan old_values dan new_values, IP address, dan user agent
-   - Admin bisa melihat seluruh audit trail dengan filter
-
-5. **Admin Dashboard Statistics**
+4. **Admin Dashboard Statistics**
    - Endpoint khusus yang menampilkan ringkasan: total employee, pending requests, approved/rejected bulan ini
 
 ---
@@ -88,8 +77,6 @@ users (1) ──────── (N) leave_requests
   │                       └── (1) ──── (N) leave_balance_ledgers
   │
   └── (1) ──────── (N) leave_balances
-  │
-  └── (1) ──────── (N) audit_trails (polymorphic)
 ```
 
 ### Tabel Utama
@@ -100,7 +87,6 @@ users (1) ──────── (N) leave_requests
 | `leave_requests` | Pengajuan cuti dengan status workflow (pending → approved/rejected) |
 | `leave_balances` | Saldo cuti per user per tahun (quota, used, pending) |
 | `leave_balance_ledgers` | Log transaksi perubahan saldo (seperti buku besar) |
-| `audit_trails` | Jejak audit polymorphic untuk setiap perubahan data |
 
 ---
 
@@ -214,7 +200,6 @@ LEAVE_QUOTA_PER_YEAR=12
 | GET | `/api/v1/admin/employees` | List employees + balances | Admin |
 | GET | `/api/v1/admin/employees/{id}/balance` | Employee balance detail | Admin |
 | PATCH | `/api/v1/admin/leaves/{id}/review` | Approve/Reject leave | Admin |
-| GET | `/api/v1/admin/audit-trails` | View audit trails | Admin |
 
 ### Penggunaan Token
 
