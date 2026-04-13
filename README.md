@@ -198,7 +198,7 @@ Authorization: Bearer <your-token>
 
 ## Postman Documentation
 
-Link Postman: *(akan ditambahkan)*
+Link Postman: [Leave Management System](https://www.postman.com/restless-spaceship-906429/leave-management-system/collection/43071338-edfcd86f-3fcf-46cc-a64f-33efebf358f1/?action=share&creator=43071338)
 
 ---
 
