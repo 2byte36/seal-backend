@@ -34,17 +34,11 @@ class AuthController extends Controller
         return $this->respondWithToken($result['token'], $result['user'], 'Login successful.');
     }
 
-    public function googleRedirect(): JsonResponse
+    public function googleRedirect()
     {
-        $url = Socialite::driver('google')
+        return Socialite::driver('google')
             ->stateless()
-            ->redirect()
-            ->getTargetUrl();
-
-        return response()->json([
-            'message' => 'Redirect to Google for authentication.',
-            'data' => ['url' => $url],
-        ]);
+            ->redirect();
     }
 
     public function googleCallback(Request $request): JsonResponse
