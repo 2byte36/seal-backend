@@ -10,7 +10,7 @@ RESTful API untuk sistem manajemen cuti karyawan, dibangun dengan **Laravel 13**
 |-------|-----------|
 | Framework | Laravel |
 | Database | MySQL |
-| Authentication | JWT (php-open-source-saver/jwt-auth) |
+| Authentication | JWT |
 | OAuth | Laravel Socialite |
 | Language | PHP |
 
@@ -24,8 +24,8 @@ RESTful API untuk sistem manajemen cuti karyawan, dibangun dengan **Laravel 13**
 HTTP Request
     │
     ▼
-[Middleware] ─── auth:sanctum (token validation)
-    │              └── role:admin/employee (role check)
+[Middleware] ─── JWT
+    │             └── role:admin/employee (role check)
     ▼
 [Form Request] ─── Validasi input (rules, messages)
     │
@@ -84,7 +84,7 @@ HTTP Response (JSON)
 ```bash
 # 1. Clone repository
 git clone https://github.com/2byte36/seal-backend.git
-cd seal_backend
+cd seal-backend
 
 # 2. Install dependencies
 composer install
